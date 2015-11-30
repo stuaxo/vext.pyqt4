@@ -1,17 +1,24 @@
-import os
+import sys
+
+from glob import glob
+from os.path import abspath, dirname, join
 
 from distutils import sysconfig
 from setuptools import setup
 from setuptools.command.install import install
 
-here=os.path.dirname(os.path.abspath(__file__))
+here=dirname(abspath(__file__))
 site_packages_path = sysconfig.get_python_lib()
+vext_files = list(glob("*.vext"))
 
+def _post_install():
+    from vext.install import check_sysdeps
+    check_sysdeps(join(here, *vext_files))
 
 class CheckInstall(install):
     def run(self):
-        # TODO - massive memory leak happens here !
         self.do_egg_install()
+        self.execute(_post_install, [], msg="Check system dependencies:")
  
 long_description="""
 Allow use of system PyQt4 in a virtualenv  
@@ -57,8 +64,8 @@ setup(
 
     install_requires=["vext"],
 
-    # Install pygtk vext
+    # Install vext files
     data_files=[
-        (os.path.join(site_packages_path, 'vext/specs'), ['pyqt4.vext'])
+        (join(sys.prefix, 'share/vext/specs'), vext_files)
     ],
 )
