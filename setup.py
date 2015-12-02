@@ -27,7 +27,7 @@ Should work on all platforms.
 
 setup(
     name='vext.pyqt4',
-    version='0.2.1',
+    version='0.4.99',
     description='Use system pyqt4 from a virtualenv',
     long_description=long_description,
 
@@ -62,7 +62,7 @@ setup(
     # What does your project relate to?
     keywords='virtualenv pyqt4 qt vext',
 
-    install_requires=["vext"],
+    install_requires=["vext>=0.4.99"],
 
     # Install vext files
     data_files=[
