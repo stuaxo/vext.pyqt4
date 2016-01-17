@@ -12,10 +12,11 @@ site_packages_path = sysconfig.get_python_lib()
 vext_files = list(glob("*.vext"))
 
 def _post_install():
-    from vext.install import check_sysdeps
+    from vext.install import check_sysdeps, install_vexts
+    install_vexts(vext_files)  # data_files doesn't work in pip7 so do it ourselves
     check_sysdeps(join(here, *vext_files))
 
-class CheckInstall(install):
+class Install(install):
     def run(self):
         self.do_egg_install()
         self.execute(_post_install, [], msg="Check system dependencies:")
@@ -27,12 +28,12 @@ Should work on all platforms.
 
 setup(
     name='vext.pyqt4',
-    version='0.4.99',
+    version='0.5.0',
     description='Use system pyqt4 from a virtualenv',
     long_description=long_description,
 
     cmdclass={
-        'install': CheckInstall,
+        'install': Install,
     },
 
     url='https://github.com/stuaxo/vext',
@@ -62,10 +63,6 @@ setup(
     # What does your project relate to?
     keywords='virtualenv pyqt4 qt vext',
 
-    install_requires=["vext>=0.4.99"],
-
-    # Install vext files
-    data_files=[
-        (join(sys.prefix, 'share/vext/specs'), vext_files)
-    ],
+    setup_requires=["setuptools>=0.18.8"],
+    install_requires=["vext>=0.5.0"],
 )
